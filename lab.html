@@ -10,12 +10,15 @@
         .nav { padding: 20px; text-align: center; border-bottom: 1px solid #30363d; }
         .nav a { color: #58a6ff; text-decoration: none; margin: 0 15px; font-weight: bold; }
         .container { max-width: 900px; margin: 50px auto; padding: 20px; }
-        .tool-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 25px; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .tool-card::before { content: "IN DEVELOPMENT"; position: absolute; top: 10px; right: -30px; background: var(--accent); color: white; padding: 5px 40px; transform: rotate(45deg); font-size: 10px; font-weight: bold; }
-        h1 { color: #58a6ff; text-align: center; }
+        .tool-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 25px; margin-bottom: 20px; position: relative; }
+        h1 { color: #58a6ff; text-align: center; cursor: pointer; user-select: none; }
         h2 { color: var(--accent); margin-top: 0; }
-        .code-snippet { background: #000; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; color: #00ff00; font-size: 0.9rem; }
-        .footer { text-align: center; padding: 40px; color: #8b949e; }
+        
+        /* Hidden Secure Notepad Style */
+        #secure-note-area { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
+        textarea { width: 100%; height: 200px; background: #000; color: #00ff00; border: 1px solid var(--accent); border-radius: 5px; padding: 15px; font-family: monospace; resize: none; }
+        .status-msg { font-size: 0.8rem; color: var(--accent); margin-top: 5px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -25,24 +28,57 @@
 </div>
 
 <div class="container">
-    <h1>V_Gate Laboratory</h1>
+    <h1 id="lab-title">V_Gate Laboratory</h1>
     <p style="text-align: center;">Experimental security tools and scripts by <strong>Ellai</strong>.</p>
+
+    <div id="secure-note-area">
+        <h2>[!] Secure Local Notepad</h2>
+        <p style="font-size: 0.9rem; color: #8b949e;">This data is stored only on this device.</p>
+        <textarea id="note-input" placeholder="Type your secret notes here..."></textarea>
+        <div id="save-status" class="status-msg">Changes saved locally.</div>
+    </div>
 
     <div class="tool-card">
         <h2>1. CloudSentinel (Beta)</h2>
-        <p>A proactive script designed to audit cloud infrastructure misconfigurations in real-time.</p>
-        <div class="code-snippet"># Running initial scan...<br>[+] Analyzing security groups...<br>[!] Warning: Port 22 exposed.</div>
+        <p>Proactive cloud infrastructure auditing tool.</p>
     </div>
 
     <div class="tool-card">
         <h2>2. CryptShield Engine</h2>
-        <p>Advanced AES-256 encryption layer for securing sensitive corporate communications.</p>
+        <p>AES-256 encryption layer for corporate data.</p>
     </div>
 </div>
 
-<div class="footer">
-    <p>Predicting.cloud | Engineering the Future of Resilience</p>
-</div>
+<script>
+    const title = document.getElementById('lab-title');
+    const noteArea = document.getElementById('secure-note-area');
+    const noteInput = document.getElementById('note-input');
+    const saveStatus = document.getElementById('save-status');
+
+    // Secret Activation: 3 Clicks
+    let clickCount = 0;
+    title.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 3) {
+            noteArea.style.display = 'block';
+            saveStatus.innerText = "System Unlocked. Local Storage Active.";
+        }
+        setTimeout(() => { clickCount = 0; }, 1000); 
+    });
+
+    // Load saved note from Local Storage
+    const savedNote = localStorage.getItem('vgate_secret_note');
+    if (savedNote) {
+        noteInput.value = savedNote;
+    }
+
+    // Auto-save on every keystroke
+    noteInput.addEventListener('input', () => {
+        localStorage.setItem('vgate_secret_note', noteInput.value);
+        saveStatus.innerText = "Saving to device memory...";
+        setTimeout(() => { saveStatus.innerText = "All changes saved locally."; }, 1000);
+    });
+</script>
 
 </body>
 </html>
